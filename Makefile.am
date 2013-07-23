@@ -5,18 +5,18 @@ ACLOCAL_AMFLAGS = -I m4
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = 3rdparty .
+SUBDIRS = .
 
-include 3rdparty/versions.am
-
-STOUT = 3rdparty/stout
-BOOST = 3rdparty/boost-$(BOOST_VERSION)
-GLOG = 3rdparty/glog-$(GLOG_VERSION)
-GMOCK = 3rdparty/gmock-$(GMOCK_VERSION)
-GPERFTOOLS = 3rdparty/gperftools-$(GPERFTOOLS_VERSION)
-GTEST = $(GMOCK)/gtest
-RY_HTTP_PARSER = 3rdparty/ry-http-parser-$(RY_HTTP_PARSER_VERSION)
-LIBEV = 3rdparty/libev-$(LIBEV_VERSION)
+# SUBDIRS = 3rdparty .
+# include 3rdparty/versions.am
+# STOUT = 3rdparty/stout
+# BOOST = 3rdparty/boost-$(BOOST_VERSION)
+# GLOG = 3rdparty/glog-$(GLOG_VERSION)
+# GMOCK = 3rdparty/gmock-$(GMOCK_VERSION)
+# GPERFTOOLS = 3rdparty/gperftools-$(GPERFTOOLS_VERSION)
+# GTEST = $(GMOCK)/gtest
+# RY_HTTP_PARSER = 3rdparty/ry-http-parser-$(RY_HTTP_PARSER_VERSION)
+# LIBEV = 3rdparty/libev-$(LIBEV_VERSION)
 
 
 # Library. It is not installable presently because most people link
@@ -39,22 +39,17 @@ libprocess_la_SOURCES =		\
 
 libprocess_la_CPPFLAGS =		\
   -I$(srcdir)/include			\
-  -I$(srcdir)/$(STOUT)/include		\
-  -I$(BOOST)				\
-  -I$(GLOG)/src				\
-  -I$(LIBEV)				\
-  -I$(RY_HTTP_PARSER)			\
   $(AM_CPPFLAGS)
 
-libprocess_la_LIBADD =			\
-  $(GLOG)/libglog.la			\
-  3rdparty/libry_http_parser.la	\
-  $(LIBEV)/libev.la
+libprocess_la_LIBADD =		\
+  libglog.so			\
+  libhttp_parser.so		\
+  libev.so
 
-if HAS_GPERFTOOLS
-libprocess_la_CPPFLAGS += -I$(GPERFTOOLS)/src
-libprocess_la_LIBADD += $(GPERFTOOLS)/libprofiler.la
-endif
+#if HAS_GPERFTOOLS
+# libprocess_la_CPPFLAGS += -I$(GPERFTOOLS)/src
+# libprocess_la_LIBADD += $(GPERFTOOLS)/libprofiler.la
+#endif
 
 # Headers.
 libprocess_la_SOURCES +=					\
@@ -106,16 +101,15 @@ tests_SOURCES =							\
 
 tests_CPPFLAGS =			\
   -I$(top_srcdir)/src			\
-  -I$(GTEST)/include			\
-  -I$(GMOCK)/include			\
+  -I/usr/include			\
   $(libprocess_la_CPPFLAGS)
 
 tests_LDADD =				\
-  third_party/libgmock.la		\
-  libprocess.la				\
-  $(GLOG)/libglog.la			\
-  third_party/libry_http_parser.la	\
-  $(LIBEV)/libev.la
+  libgmock.so				\
+  libprocess.so				\
+  libglog.so				\
+  libhttp_parser.so			\
+  libev.so
 
 TESTS = tests
 
